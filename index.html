@@ -169,7 +169,17 @@ function render(){
     r.children[1].oninput=e=>{x[0]=e.target.value;autoSave();updatePreview()};
     r.children[2].oninput=e=>{x[1]=e.target.value;autoSave();updatePreview()};
     r.children[3].oninput=e=>{x[2]=e.target.value;autoSave();updatePreview()};
-    r.children[4].querySelector("input").onchange=e=>{x[3]=e.target.checked;autoSave();updatePreview()};
+    r.children[4]
+  .querySelector("input")
+  .onchange=e=>{
+
+    x[3]=e.target.checked;
+
+    autoSave();
+
+    updatePreview();
+
+  };
     del.onclick=()=>{state.fish.splice(i,1);autoSave();render();updatePreview()};
     f.appendChild(r);
   });
@@ -210,7 +220,17 @@ function render(){
     const del=document.createElement("button");del.className="danger";del.textContent="×";del.title="Remove plate";r.appendChild(del);
     r.children[1].oninput=e=>{x[0]=e.target.value;autoSave();updatePreview()};
     r.children[2].oninput=e=>{x[1]=e.target.value;autoSave();updatePreview()};
-    r.children[3].querySelector("input").onchange=e=>{x[2]=e.target.checked;autoSave();updatePreview()};
+    r.children[3]
+  .querySelector("input")
+  .onchange=e=>{
+
+    x[2]=e.target.checked;
+
+    autoSave();
+
+    updatePreview();
+
+  };
     del.onclick=()=>{state.plates.splice(i,1);autoSave();render();updatePreview()};
     p.appendChild(r);
   });
