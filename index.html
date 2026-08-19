@@ -128,8 +128,11 @@ function render(){
   document.getElementById("businessInfo").value=state.businessInfo;
 
   const f=document.getElementById("fishList");f.innerHTML="";
-  state.fish.forEach((x,i)=>{
-    const r=document.createElement("div");
+  state.fish
+  .map(
+    x=>`${x[0]} ${x[1]} ${x[2]}`
+  )
+  .join("\n");
     r.className="row reorder-row";
     r.dataset.index=i;
     r.innerHTML=`
@@ -172,8 +175,11 @@ function render(){
   });
 
   const p=document.getElementById("plateList");p.innerHTML="";
-  state.plates.forEach((x,i)=>{
-    if(x.length<3)x[2]=true;
+  state.plates
+  .map(
+    x=>`${x[0]} ${x[1]} per plate`
+  )
+  .join("\n");
     const r=document.createElement("div");
     r.className="row plate-row reorder-row";
     r.dataset.index=i;
