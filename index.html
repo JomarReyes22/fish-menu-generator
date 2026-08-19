@@ -7,96 +7,508 @@
 <meta name="description" content="Mobile Fish Menu Generator">
 <link rel="manifest" href="manifest.json">
 <title>Fish Menu Generator 2.1</title>
-<style>
-:root{--bg:#f3f7f8;--card:#fff;--ink:#163238;--muted:#60777c;--accent:#087f8c;--accent2:#e6f7f8;--danger:#b42318;--border:#d8e4e7}
-*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);padding-bottom:32px}
-header{position:sticky;top:0;z-index:10;background:var(--accent);color:white;padding:14px 16px;box-shadow:0 2px 8px #0002}h1{font-size:20px;margin:0}header small{opacity:.9}
-main{max-width:760px;margin:auto;padding:12px}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px #0000000b}
-h2{font-size:17px;margin:0 0 10px}.row{display:grid;grid-template-columns:42px 1fr 90px 88px 42px;gap:7px;align-items:center;margin-bottom:8px}
-.plate-row{grid-template-columns:42px 1fr 90px 70px 42px}.input,textarea,select{width:100%;border:1px solid #c9d9dc;border-radius:9px;padding:10px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:70px;resize:vertical}
-button{border:0;border-radius:10px;padding:11px 13px;font:600 14px system-ui;cursor:pointer;background:var(--accent);color:white;min-height:44px}.secondary{background:var(--accent2);color:var(--accent);border:1px solid #b9e4e7}.danger{background:#fff0ee;color:var(--danger);border:1px solid #f0c5bf}.ghost{background:#fff;color:var(--ink);border:1px solid var(--border)}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.actions button:first-child{grid-column:1/-1}.hint{font-size:12px;color:var(--muted);margin:6px 0 10px}.available{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);white-space:nowrap}.available input{width:18px;height:18px}
-.photo-actions{display:flex;gap:8px;flex-wrap:wrap}.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.photo{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#eef4f5;border:1px solid var(--border)}.photo img{width:100%;height:100%;object-fit:cover}.photo button{position:absolute;right:5px;top:5px;min-height:32px;width:32px;padding:0;border-radius:50%;background:#000b;color:#fff}
-.preview{white-space:pre-wrap;background:#f8fbfb;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:14px;line-height:1.45;min-height:180px}
-footer{max-width:760px;margin:auto;padding:0 12px;color:var(--muted);font-size:11px;text-align:center}
-@media(max-width:520px){.row{grid-template-columns:42px 1fr 82px 78px 40px}.plate-row{grid-template-columns:42px 1fr 82px 65px 40px}.photos{grid-template-columns:repeat(2,1fr)}button{padding:10px}.card{padding:12px}}
 
-.drag-handle{width:42px;min-height:44px;padding:0;display:flex;align-items:center;justify-content:center;background:#f8fbfb;color:var(--muted);border:1px solid var(--border);font-size:20px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
-.drag-handle:active{cursor:grabbing}
-.reorder-row{position:relative}
-.reorder-row.dragging{opacity:.45}
-.reorder-row.drag-over{outline:2px solid var(--accent);outline-offset:1px}
-.drag-placeholder{height:44px;border:2px dashed var(--accent);border-radius:9px;margin-bottom:8px;background:var(--accent2)}
+<style>
+:root{
+  --bg:#f3f7f8;
+  --card:#fff;
+  --ink:#163238;
+  --muted:#60777c;
+  --accent:#087f8c;
+  --accent2:#e6f7f8;
+  --danger:#b42318;
+  --border:#d8e4e7
+}
+
+*{box-sizing:border-box}
+
+html{background:var(--bg)}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink);
+  padding-bottom:32px
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:var(--accent);
+  color:white;
+  padding:14px 16px;
+  box-shadow:0 2px 8px #0002
+}
+
+h1{
+  font-size:20px;
+  margin:0
+}
+
+header small{
+  opacity:.9
+}
+
+main{
+  max-width:760px;
+  margin:auto;
+  padding:12px
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 1px 3px #0000000b
+}
+
+h2{
+  font-size:17px;
+  margin:0 0 10px
+}
+
+.row{
+  display:grid;
+  grid-template-columns:42px 1fr 90px 88px 42px;
+  gap:7px;
+  align-items:center;
+  margin-bottom:8px;
+  position:relative
+}
+
+.plate-row{
+  grid-template-columns:42px 1fr 90px 42px
+}
+
+.input,
+textarea,
+select{
+  width:100%;
+  border:1px solid #c9d9dc;
+  border-radius:9px;
+  padding:10px;
+  font:inherit;
+  background:#fff;
+  color:var(--ink)
+}
+
+textarea{
+  min-height:70px;
+  resize:vertical
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:11px 13px;
+  font:600 14px system-ui;
+  cursor:pointer;
+  background:var(--accent);
+  color:white;
+  min-height:44px
+}
+
+.secondary{
+  background:var(--accent2);
+  color:var(--accent);
+  border:1px solid #b9e4e7
+}
+
+.danger{
+  background:#fff0ee;
+  color:var(--danger);
+  border:1px solid #f0c5bf
+}
+
+.ghost{
+  background:#fff;
+  color:var(--ink);
+  border:1px solid var(--border)
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px
+}
+
+.actions button:first-child{
+  grid-column:1/-1
+}
+
+.hint{
+  font-size:12px;
+  color:var(--muted);
+  margin:6px 0 10px
+}
+
+/* DRAG HANDLE */
+
+.drag-handle{
+  width:42px;
+  height:44px;
+  min-height:44px;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f8fbfb;
+  color:var(--muted);
+  border:1px solid var(--border);
+  font-size:20px;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  cursor:grab
+}
+
+.drag-handle:active{
+  cursor:grabbing
+}
+
+/* SMOOTH DRAGGING */
+
+.reorder-row{
+  transform:translate3d(0,0,0);
+  will-change:transform
+}
+
+.reorder-row.is-dragging{
+  z-index:100;
+  opacity:.96;
+  transition:none!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+  border-radius:10px
+}
+
+.reorder-row.is-shifting{
+  transition:transform 120ms cubic-bezier(.2,.8,.2,1)
+}
+
+.photo-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap
+}
+
+.photos{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin:10px 0
+}
+
+.photo{
+  position:relative;
+  aspect-ratio:1;
+  border-radius:10px;
+  overflow:hidden;
+  background:#eef4f5;
+  border:1px solid var(--border)
+}
+
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover
+}
+
+.photo button{
+  position:absolute;
+  right:5px;
+  top:5px;
+  min-height:32px;
+  width:32px;
+  padding:0;
+  border-radius:50%;
+  background:#000b;
+  color:#fff
+}
+
+.preview{
+  white-space:pre-wrap;
+  background:#f8fbfb;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  font-size:14px;
+  line-height:1.45;
+  min-height:180px
+}
+
+footer{
+  max-width:760px;
+  margin:auto;
+  padding:0 12px;
+  color:var(--muted);
+  font-size:11px;
+  text-align:center
+}
+
+@media(max-width:520px){
+
+  .row{
+    grid-template-columns:42px 1fr 82px 78px 40px
+  }
+
+  .plate-row{
+    grid-template-columns:42px 1fr 82px 40px
+  }
+
+  button{
+    padding:10px
+  }
+
+  .card{
+    padding:12px
+  }
+}
 </style>
 </head>
+
 <body>
-<header><h1>🐟 Fish Menu Generator</h1><small>Version 2.1 • Mobile Menu Builder</small></header>
+
+<header>
+  <h1>🐟 Fish Menu Generator</h1>
+  <small>Version 2.1 • Mobile Menu Builder</small>
+</header>
+
 <main>
-<section class="card">
-<h2>📅 Today's Menu</h2>
-<div class="row" style="grid-template-columns:1fr 1fr">
-<label>Month/day/year<br><input class="input" id="dateInput" type="date"></label>
-<label>Preview date<br><input class="input" id="datePreview" disabled></label>
-</div>
-</section>
 
 <section class="card">
-<h2>🐟 Fish per Kilo</h2><div class="hint">Only items marked Available appear in the message. Press and hold ☰ to reorder.</div>
-<div id="fishList"></div><button class="secondary" id="addFish">＋ Add Fish</button>
+
+  <h2>📅 Today's Menu</h2>
+
+  <div class="row" style="grid-template-columns:1fr 1fr">
+
+    <label>
+      Month/day/year<br>
+      <input
+        class="input"
+        id="dateInput"
+        type="date"
+      >
+    </label>
+
+    <label>
+      Preview date<br>
+      <input
+        class="input"
+        id="datePreview"
+        disabled
+      >
+    </label>
+
+  </div>
+
 </section>
 
-<section class="card">
-<h2>🍽️ Plate Items</h2><div class="hint">Only items marked On appear in the generated message. Press and hold ☰ to reorder.</div>
-<div id="plateList"></div><button class="secondary" id="addPlate">＋ Add Plate Item</button>
-</section>
 
 <section class="card">
-<h2>🖼️ Today's Pictures</h2>
-<div class="hint">Select multiple photos. The number of photos is not limited to 3. Photos stay in this page until you remove them or reload default photos.</div>
-<div class="photos" id="photos"></div>
-<div class="photo-actions">
-<label><input id="photoInput" type="file" accept="image/*" multiple hidden><button type="button" class="secondary" onclick="document.getElementById('photoInput').click()">🖼️ Upload Photos</button></label>
-<button type="button" class="secondary" id="loadDefaults">➕ Load Default Photos</button>
-<button type="button" class="danger" id="clearPhotos">Clear Photos</button>
-</div>
+
+  <h2>🐟 Fish per Kilo</h2>
+
+  <div class="hint">
+    Drag the ☰ handle to change the order.
+  </div>
+
+  <div id="fishList"></div>
+
+  <button
+    class="secondary"
+    id="addFish"
+  >
+    ＋ Add Fish
+  </button>
+
 </section>
 
-<section class="card">
-<h2>✏️ Message & Business Information</h2>
-<label>Opening text<textarea id="opening"></textarea></label><br>
-<label>Delivery / contact / payment / permit<textarea id="businessInfo"></textarea></label>
-</section>
 
 <section class="card">
-<h2>👀 Message Preview</h2>
-<div class="preview" id="preview"></div>
+
+  <h2>🍽️ Plate Items</h2>
+
+  <div class="hint">
+    Drag the ☰ handle to change the order.
+  </div>
+
+  <div id="plateList"></div>
+
+  <button
+    class="secondary"
+    id="addPlate"
+  >
+    ＋ Add Plate Item
+  </button>
+
 </section>
 
+
 <section class="card">
-<div class="actions">
-<button id="share">📤 SHARE TODAY'S MENU</button>
-<button class="secondary" id="copy">📋 COPY MESSAGE</button>
-<button class="ghost" id="save">💾 SAVE SETTINGS</button>
-<button class="danger" id="reset">↩ RESET DEFAULTS</button>
-</div>
-<div class="hint" id="status"></div>
+
+  <h2>🖼️ Today's Pictures</h2>
+
+  <div class="hint">
+    Select multiple photos. Photos stay on this page until removed or reset.
+  </div>
+
+  <div
+    class="photos"
+    id="photos"
+  ></div>
+
+  <div class="photo-actions">
+
+    <label>
+
+      <input
+        id="photoInput"
+        type="file"
+        accept="image/*"
+        multiple
+        hidden
+      >
+
+      <button
+        type="button"
+        class="secondary"
+        onclick="document.getElementById('photoInput').click()"
+      >
+        🖼️ Upload Photos
+      </button>
+
+    </label>
+
+    <button
+      type="button"
+      class="secondary"
+      id="loadDefaults"
+    >
+      ➕ Load Default Photos
+    </button>
+
+    <button
+      type="button"
+      class="danger"
+      id="clearPhotos"
+    >
+      Clear Photos
+    </button>
+
+  </div>
+
 </section>
+
+
+<section class="card">
+
+  <h2>✏️ Message & Business Information</h2>
+
+  <label>
+    Opening text
+    <textarea id="opening"></textarea>
+  </label>
+
+  <br>
+
+  <label>
+    Delivery / contact / payment / permit
+    <textarea id="businessInfo"></textarea>
+  </label>
+
+</section>
+
+
+<section class="card">
+
+  <h2>👀 Message Preview</h2>
+
+  <div
+    class="preview"
+    id="preview"
+  ></div>
+
+</section>
+
+
+<section class="card">
+
+  <div class="actions">
+
+    <button id="share">
+      📤 SHARE TODAY'S MENU
+    </button>
+
+    <button
+      class="secondary"
+      id="copy"
+    >
+      📋 COPY MESSAGE
+    </button>
+
+    <button
+      class="ghost"
+      id="save"
+    >
+      💾 SAVE SETTINGS
+    </button>
+
+    <button
+      class="danger"
+      id="reset"
+    >
+      ↩ RESET DEFAULTS
+    </button>
+
+  </div>
+
+  <div
+    class="hint"
+    id="status"
+  ></div>
+
+</section>
+
 </main>
-<footer>Photos are handled by your browser/device. Sharing uses the official device Share Sheet where supported.</footer>
+
+<footer>
+  Photos are handled by your browser/device.
+  Sharing uses the official device Share Sheet where supported.
+</footer>
+
 
 <script>
+
 const DEFAULTS={
-fish:[
-["Tahong","110","kilo"],["Hipon","520","kilo"],["Dalagang Bukid","290","kilo"],
-["Alumahan","290","kilo"],["Bangus","280","kilo"],["Tilapya","180","kilo"]
-],
-plates:[
-["Hipon","120"],["Dalagang Bukid","100"],["Alumahan","100"],["Bangus 1pc.","180"],
-["Bangus 2pc.","340"],["Boneless 1pc.","190"],["Tilapya 2's","100"],["Tilapya 3's","140"]
-],
-opening:`Magandang araw mga Kasuki
+
+  fish:[
+    ["Tahong","110","kilo"],
+    ["Hipon","520","kilo"],
+    ["Dalagang Bukid","290","kilo"],
+    ["Alumahan","290","kilo"],
+    ["Bangus","280","kilo"],
+    ["Tilapya","180","kilo"]
+  ],
+
+  plates:[
+    ["Hipon","120"],
+    ["Dalagang Bukid","100"],
+    ["Alumahan","100"],
+    ["Bangus 1pc.","180"],
+    ["Bangus 2pc.","340"],
+    ["Boneless 1pc.","190"],
+    ["Tilapya 2's","100"],
+    ["Tilapya 3's","140"]
+  ],
+
+  opening:`Magandang araw mga Kasuki
 Padeliver na po ....`,
-business:`🟥FREE DELIVERY --- GREENESTATE
+
+  business:`🟥FREE DELIVERY --- GREENESTATE
 
 🚫MINIMUM 200 - NEARBY SUBDIVISION
 
@@ -109,271 +521,1590 @@ SALAMAT.. ORDER NA PO...
 
 ♦️BUSINESS PERMIT♦️
 2026 #06319`,
-photos:["fish_per_kilo.jpg","plate_part_1.jpg","plate_part_2.jpg"]
+
+  photos:[
+    "fish_per_kilo.jpg",
+    "plate_part_1.jpg",
+    "plate_part_2.jpg"
+  ]
+
 };
+
+
 let state=load();
-function clone(x){return JSON.parse(JSON.stringify(x))}
+
+
+function clone(x){
+
+  return JSON.parse(
+    JSON.stringify(x)
+  );
+
+}
+
+
 function load(){
- try{const s=JSON.parse(localStorage.getItem("fishMenuV21"));if(s)return s}catch(e){}
- return {fish:clone(DEFAULTS.fish),plates:clone(DEFAULTS.plates),opening:DEFAULTS.opening,businessInfo:DEFAULTS.business,date:new Date().toISOString().slice(0,10),photoData:[]};
-}
-function save(){localStorage.setItem("fishMenuV21",JSON.stringify(state)); status("Saved on this device.");}
-function autoSave(){localStorage.setItem("fishMenuV21",JSON.stringify(state));}
-function status(t){document.getElementById("status").textContent=t;setTimeout(()=>{if(document.getElementById("status").textContent===t)document.getElementById("status").textContent=""},2500)}
-function filDate(v){let d=new Date(v+"T12:00:00");const m=["Enero","Pebrero","Marso","Abril","Mayo","Hunyo","Hulyo","Agosto","Setyembre","Oktubre","Nobyembre","Disyembre"],w=["Linggo","Lunes","Martes","Miyerkules","Huwebes","Biyernes","Sabado"];return `${m[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} ${w[d.getDay()]}`}
-function render(){
-  document.getElementById("dateInput").value=state.date;
-  document.getElementById("datePreview").value=filDate(state.date);
-  document.getElementById("opening").value=state.opening;
-  document.getElementById("businessInfo").value=state.businessInfo;
 
-  const f=document.getElementById("fishList");f.innerHTML="";
-  state.fish
-  .map(
-    x=>`${x[0]} ${x[1]} ${x[2]}`
-  )
-  .join("\n");
-    r.className="row reorder-row";
-    r.dataset.index=i;
-    r.innerHTML=`
+  try{
 
-  <button
-    type="button"
-    class="drag-handle"
-    aria-label="Reorder fish"
-    title="Press and hold to reorder"
-  >☰</button>
+    const saved=
+      JSON.parse(
+        localStorage.getItem(
+          "fishMenuV21"
+        )
+      );
 
-  <input
-    class="input"
-    value="${esc(x[0])}"
-    aria-label="Fish name"
-  >
+    if(saved){
 
-  <input
-    class="input"
-    type="number"
-    min="0"
-    step="1"
-    value="${esc(x[1])}"
-    aria-label="Price"
-  >
+      return {
 
-  <input
-    class="input"
-    value="${esc(x[2])}"
-    aria-label="Unit"
-  >
-`;
-    const del=document.createElement("button");del.className="danger";del.textContent="×";del.title="Remove fish";r.appendChild(del);
-    r.children[1].oninput=e=>{x[0]=e.target.value;autoSave();updatePreview()};
-    r.children[2].oninput=e=>{x[1]=e.target.value;autoSave();updatePreview()};
-    r.children[3].oninput=e=>{x[2]=e.target.value;autoSave();updatePreview()};
-    r.children[4]
-  .querySelector("input")
-  .onchange=e=>{
+        fish:
+          Array.isArray(saved.fish)
+            ? saved.fish.map(x=>[
+                x[0] ?? "",
+                x[1] ?? "",
+                x[2] ?? "kilo"
+              ])
+            : clone(DEFAULTS.fish),
 
-    x[3]=e.target.checked;
+        plates:
+          Array.isArray(saved.plates)
+            ? saved.plates.map(x=>[
+                x[0] ?? "",
+                x[1] ?? ""
+              ])
+            : clone(DEFAULTS.plates),
 
-    autoSave();
+        opening:
+          saved.opening ??
+          DEFAULTS.opening,
 
-    updatePreview();
+        businessInfo:
+          saved.businessInfo ??
+          DEFAULTS.business,
 
-  };
-    del.onclick=()=>{state.fish.splice(i,1);autoSave();render();updatePreview()};
-    f.appendChild(r);
-  });
+        date:
+          saved.date ??
+          new Date()
+            .toISOString()
+            .slice(0,10),
 
-  const p=document.getElementById("plateList");p.innerHTML="";
-  state.plates
-  .map(
-    x=>`${x[0]} ${x[1]} per plate`
-  )
-  .join("\n");
-    const r=document.createElement("div");
-    r.className="row plate-row reorder-row";
-    r.dataset.index=i;
-    r.innerHTML=`
+        photoData:
+          Array.isArray(saved.photoData)
+            ? saved.photoData
+            : []
 
-  <button
-    type="button"
-    class="drag-handle"
-    aria-label="Reorder plate"
-    title="Press and hold to reorder"
-  >☰</button>
+      };
 
-  <input
-    class="input"
-    value="${esc(x[0])}"
-    aria-label="Plate item"
-  >
+    }
 
-  <input
-    class="input"
-    type="number"
-    min="0"
-    step="1"
-    value="${esc(x[1])}"
-    aria-label="Plate price"
-  >
-`;
-    const del=document.createElement("button");del.className="danger";del.textContent="×";del.title="Remove plate";r.appendChild(del);
-    r.children[1].oninput=e=>{x[0]=e.target.value;autoSave();updatePreview()};
-    r.children[2].oninput=e=>{x[1]=e.target.value;autoSave();updatePreview()};
-    r.children[3]
-  .querySelector("input")
-  .onchange=e=>{
+  }catch(e){}
 
-    x[2]=e.target.checked;
+  return {
 
-    autoSave();
+    fish:clone(DEFAULTS.fish),
 
-    updatePreview();
+    plates:clone(DEFAULTS.plates),
+
+    opening:DEFAULTS.opening,
+
+    businessInfo:DEFAULTS.business,
+
+    date:new Date()
+      .toISOString()
+      .slice(0,10),
+
+    photoData:[]
 
   };
-    del.onclick=()=>{state.plates.splice(i,1);autoSave();render();updatePreview()};
-    p.appendChild(r);
-  });
 
-  setupReorder("fishList",state.fish);
-  setupReorder("plateList",state.plates);
-  renderPhotos();updatePreview();
 }
-function esc(s){return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
-function setupReorder(containerId,list){
-  const container=document.getElementById(containerId);
+
+
+function save(){
+
+  localStorage.setItem(
+    "fishMenuV21",
+    JSON.stringify(state)
+  );
+
+  status(
+    "Saved on this device."
+  );
+
+}
+
+
+function autoSave(){
+
+  localStorage.setItem(
+    "fishMenuV21",
+    JSON.stringify(state)
+  );
+
+}
+
+
+function status(text){
+
+  const el=
+    document.getElementById(
+      "status"
+    );
+
+  el.textContent=text;
+
+  setTimeout(()=>{
+
+    if(el.textContent===text){
+
+      el.textContent="";
+
+    }
+
+  },2500);
+
+}
+
+
+function filDate(value){
+
+  const d=
+    new Date(
+      value+"T12:00:00"
+    );
+
+  const months=[
+    "Enero",
+    "Pebrero",
+    "Marso",
+    "Abril",
+    "Mayo",
+    "Hunyo",
+    "Hulyo",
+    "Agosto",
+    "Setyembre",
+    "Oktubre",
+    "Nobyembre",
+    "Disyembre"
+  ];
+
+  const days=[
+    "Linggo",
+    "Lunes",
+    "Martes",
+    "Miyerkules",
+    "Huwebes",
+    "Biyernes",
+    "Sabado"
+  ];
+
+  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} ${days[d.getDay()]}`;
+
+}
+
+
+function esc(s){
+
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/"/g,"&quot;")
+    .replace(/</g,"&lt;");
+
+}
+
+
+/* =====================================================
+   SMOOTH DRAG
+===================================================== */
+
+
+function setupReorder(
+  containerId,
+  list
+){
+
+  const container=
+    document.getElementById(
+      containerId
+    );
+
   let drag=null;
 
-  container.querySelectorAll(".drag-handle").forEach(handle=>{
-    handle.onpointerdown=e=>{
-      if(e.pointerType==="mouse" && e.button!==0)return;
-      const row=handle.closest(".reorder-row");
-      if(!row)return;
-      e.preventDefault();
+  let animationFrame=null;
 
-      drag={
-        row,
-        list,
-        oldIndex:Number(row.dataset.index),
-        pointerId:e.pointerId,
-        startY:e.clientY,
-        active:false,
-        timer:setTimeout(()=>{
-          if(!drag)return;
-          drag.active=true;
-          drag.row.classList.add("dragging");
-          handle.setPointerCapture?.(e.pointerId);
-        },180)
-      };
-    };
 
-    handle.onpointermove=e=>{
-      if(!drag || drag.pointerId!==e.pointerId)return;
+  function getRows(){
 
-      if(!drag.active){
-        if(Math.abs(e.clientY-drag.startY)>8){
-          clearTimeout(drag.timer);
-          drag=null;
+    return [
+      ...container.querySelectorAll(
+        ".reorder-row"
+      )
+    ];
+
+  }
+
+
+  function resetVisuals(){
+
+    getRows().forEach(row=>{
+
+      row.classList.remove(
+        "is-shifting"
+      );
+
+      row.style.transform="";
+
+    });
+
+  }
+
+
+  function calculateTarget(
+    pointerY,
+    dragRow
+  ){
+
+    const otherRows=
+      getRows().filter(
+        row=>row!==dragRow
+      );
+
+    let target=
+      otherRows.length;
+
+    for(
+      let i=0;
+      i<otherRows.length;
+      i++
+    ){
+
+      const rect=
+        otherRows[i]
+          .getBoundingClientRect();
+
+      const center=
+        rect.top+
+        rect.height/2;
+
+      if(pointerY<center){
+
+        target=i;
+
+        break;
+
+      }
+
+    }
+
+    return target;
+
+  }
+
+
+  function moveVisual(
+    pointerY
+  ){
+
+    if(!drag || !drag.active)
+      return;
+
+
+    const deltaY=
+      pointerY-drag.startY;
+
+
+    drag.row.style.transform=
+      `translate3d(0,${deltaY}px,0)`;
+
+
+    const rows=
+      getRows();
+
+
+    const others=
+      rows.filter(
+        row=>row!==drag.row
+      );
+
+
+    const target=
+      calculateTarget(
+        pointerY,
+        drag.row
+      );
+
+
+    others.forEach(
+      (row,index)=>{
+
+        row.classList.add(
+          "is-shifting"
+        );
+
+        row.style.transform="";
+
+        if(
+          drag.originalIndex<
+          target
+        ){
+
+          if(
+            index>=drag.originalIndex &&
+            index<target
+          ){
+
+            row.style.transform=
+              "translate3d(0,-52px,0)";
+
+          }
+
         }
-        return;
-      }
+        else if(
+          drag.originalIndex>
+          target
+        ){
 
-      e.preventDefault();
+          if(
+            index>=target &&
+            index<drag.originalIndex
+          ){
 
-      const rows=[...container.querySelectorAll(".reorder-row")];
-      const target=rows.find(row=>{
-        if(row===drag.row)return false;
-        const box=row.getBoundingClientRect();
-        return e.clientY>=box.top && e.clientY<=box.bottom;
-      });
+            row.style.transform=
+              "translate3d(0,52px,0)";
 
-      rows.forEach(row=>row.classList.remove("drag-over"));
-      if(!target)return;
+          }
 
-      target.classList.add("drag-over");
-      const box=target.getBoundingClientRect();
-
-      if(e.clientY < box.top+box.height/2){
-        container.insertBefore(drag.row,target);
-      }else{
-        container.insertBefore(drag.row,target.nextSibling);
-      }
-    };
-
-    const finish=e=>{
-      if(!drag || drag.pointerId!==e.pointerId)return;
-      clearTimeout(drag.timer);
-
-      if(drag.active){
-        const rows=[...container.querySelectorAll(".reorder-row")];
-        const newIndex=rows.indexOf(drag.row);
-
-        if(newIndex!==drag.oldIndex && newIndex>=0){
-          const item=list.splice(drag.oldIndex,1)[0];
-          list.splice(newIndex,0,item);
-          autoSave();
         }
-        drag.row.classList.remove("dragging");
-        rows.forEach(row=>row.classList.remove("drag-over"));
-        render();
-        updatePreview();
+
       }
+    );
+
+  }
+
+
+  function finish(e){
+
+    if(!drag)
+      return;
+
+    if(
+      e.pointerId!==
+      drag.pointerId
+    )
+      return;
+
+
+    clearTimeout(
+      drag.timer
+    );
+
+
+    if(!drag.active){
 
       drag=null;
-    };
 
-    handle.onpointerup=finish;
-    handle.onpointercancel=finish;
-  });
+      return;
+
+    }
+
+
+    const rows=
+      getRows();
+
+
+    const others=
+      rows.filter(
+        row=>row!==drag.row
+      );
+
+
+    let newIndex=
+      others.length;
+
+
+    for(
+      let i=0;
+      i<others.length;
+      i++
+    ){
+
+      const rect=
+        others[i]
+          .getBoundingClientRect();
+
+      const center=
+        rect.top+
+        rect.height/2;
+
+
+      if(e.clientY<center){
+
+        newIndex=i;
+
+        break;
+
+      }
+
+    }
+
+
+    newIndex=
+      Math.max(
+        0,
+        Math.min(
+          newIndex,
+          list.length-1
+        )
+      );
+
+
+    const oldIndex=
+      drag.originalIndex;
+
+
+    drag.row.classList.remove(
+      "is-dragging"
+    );
+
+
+    resetVisuals();
+
+
+    if(
+      newIndex!==oldIndex
+    ){
+
+      const item=
+        list.splice(
+          oldIndex,
+          1
+        )[0];
+
+
+      list.splice(
+        newIndex,
+        0,
+        item
+      );
+
+
+      autoSave();
+
+    }
+
+
+    drag=null;
+
+
+    render();
+
+    updatePreview();
+
+  }
+
+
+  container
+    .querySelectorAll(
+      ".drag-handle"
+    )
+    .forEach(handle=>{
+
+      handle.addEventListener(
+        "pointerdown",
+        e=>{
+
+          if(
+            e.pointerType==="mouse" &&
+            e.button!==0
+          )
+            return;
+
+
+          const row=
+            handle.closest(
+              ".reorder-row"
+            );
+
+
+          if(!row)
+            return;
+
+
+          e.preventDefault();
+
+
+          const rect=
+            row.getBoundingClientRect();
+
+
+          drag={
+
+            row,
+
+            pointerId:
+              e.pointerId,
+
+            startY:
+              e.clientY,
+
+            startTop:
+              rect.top,
+
+            originalIndex:
+              Number(
+                row.dataset.index
+              ),
+
+            active:false,
+
+            timer:null
+
+          };
+
+
+          drag.timer=
+            setTimeout(()=>{
+
+              if(!drag)
+                return;
+
+
+              drag.active=true;
+
+
+              row.classList.add(
+                "is-dragging"
+              );
+
+
+              handle.setPointerCapture?.(
+                e.pointerId
+              );
+
+            },150);
+
+        },
+        {
+          passive:false
+        }
+      );
+
+
+      handle.addEventListener(
+        "pointermove",
+        e=>{
+
+          if(!drag)
+            return;
+
+          if(
+            e.pointerId!==
+            drag.pointerId
+          )
+            return;
+
+
+          if(!drag.active){
+
+            if(
+              Math.abs(
+                e.clientY-
+                drag.startY
+              )>8
+            ){
+
+              clearTimeout(
+                drag.timer
+              );
+
+              drag=null;
+
+            }
+
+            return;
+
+          }
+
+
+          e.preventDefault();
+
+
+          if(
+            animationFrame
+          )
+            cancelAnimationFrame(
+              animationFrame
+            );
+
+
+          const y=e.clientY;
+
+
+          animationFrame=
+            requestAnimationFrame(()=>{
+
+              moveVisual(y);
+
+            });
+
+        },
+        {
+          passive:false
+        }
+      );
+
+
+      handle.addEventListener(
+        "pointerup",
+        finish,
+        {
+          passive:false
+        }
+      );
+
+
+      handle.addEventListener(
+        "pointercancel",
+        finish,
+        {
+          passive:false
+        }
+      );
+
+    });
+
 }
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+
+function render(){
+
+  document.getElementById(
+    "dateInput"
+  ).value=state.date;
+
+
+  document.getElementById(
+    "datePreview"
+  ).value=
+    filDate(state.date);
+
+
+  document.getElementById(
+    "opening"
+  ).value=
+    state.opening;
+
+
+  document.getElementById(
+    "businessInfo"
+  ).value=
+    state.businessInfo;
+
+
+  const fishList=
+    document.getElementById(
+      "fishList"
+    );
+
+
+  fishList.innerHTML="";
+
+
+  state.fish.forEach(
+    (x,i)=>{
+
+      const row=
+        document.createElement(
+          "div"
+        );
+
+
+      row.className=
+        "row reorder-row";
+
+
+      row.dataset.index=i;
+
+
+      row.innerHTML=`
+
+        <button
+          type="button"
+          class="drag-handle"
+          aria-label="Reorder fish"
+          title="Press and hold to reorder"
+        >☰</button>
+
+        <input
+          class="input"
+          value="${esc(x[0])}"
+          aria-label="Fish name"
+        >
+
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="1"
+          value="${esc(x[1])}"
+          aria-label="Price"
+        >
+
+        <input
+          class="input"
+          value="${esc(x[2])}"
+          aria-label="Unit"
+        >
+      `;
+
+
+      const deleteButton=
+        document.createElement(
+          "button"
+        );
+
+
+      deleteButton.className=
+        "danger";
+
+
+      deleteButton.textContent="×";
+
+
+      deleteButton.title=
+        "Remove fish";
+
+
+      row.appendChild(
+        deleteButton
+      );
+
+
+      row.children[1]
+        .oninput=e=>{
+
+          x[0]=e.target.value;
+
+          autoSave();
+
+          updatePreview();
+
+        };
+
+
+      row.children[2]
+        .oninput=e=>{
+
+          x[1]=e.target.value;
+
+          autoSave();
+
+          updatePreview();
+
+        };
+
+
+      row.children[3]
+        .oninput=e=>{
+
+          x[2]=e.target.value;
+
+          autoSave();
+
+          updatePreview();
+
+        };
+
+
+      deleteButton.onclick=()=>{
+
+        state.fish.splice(
+          i,
+          1
+        );
+
+        autoSave();
+
+        render();
+
+        updatePreview();
+
+      };
+
+
+      fishList.appendChild(
+        row
+      );
+
+    }
+  );
+
+
+  const plateList=
+    document.getElementById(
+      "plateList"
+    );
+
+
+  plateList.innerHTML="";
+
+
+  state.plates.forEach(
+    (x,i)=>{
+
+      const row=
+        document.createElement(
+          "div"
+        );
+
+
+      row.className=
+        "row plate-row reorder-row";
+
+
+      row.dataset.index=i;
+
+
+      row.innerHTML=`
+
+        <button
+          type="button"
+          class="drag-handle"
+          aria-label="Reorder plate"
+          title="Press and hold to reorder"
+        >☰</button>
+
+        <input
+          class="input"
+          value="${esc(x[0])}"
+          aria-label="Plate item"
+        >
+
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="1"
+          value="${esc(x[1])}"
+          aria-label="Plate price"
+        >
+      `;
+
+
+      const deleteButton=
+        document.createElement(
+          "button"
+        );
+
+
+      deleteButton.className=
+        "danger";
+
+
+      deleteButton.textContent="×";
+
+
+      deleteButton.title=
+        "Remove plate";
+
+
+      row.appendChild(
+        deleteButton
+      );
+
+
+      row.children[1]
+        .oninput=e=>{
+
+          x[0]=e.target.value;
+
+          autoSave();
+
+          updatePreview();
+
+        };
+
+
+      row.children[2]
+        .oninput=e=>{
+
+          x[1]=e.target.value;
+
+          autoSave();
+
+          updatePreview();
+
+        };
+
+
+      deleteButton.onclick=()=>{
+
+        state.plates.splice(
+          i,
+          1
+        );
+
+        autoSave();
+
+        render();
+
+        updatePreview();
+
+      };
+
+
+      plateList.appendChild(
+        row
+      );
+
+    }
+  );
+
+
+  setupReorder(
+    "fishList",
+    state.fish
+  );
+
+
+  setupReorder(
+    "plateList",
+    state.plates
+  );
+
+
+  renderPhotos();
+
+  updatePreview();
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
 
 function message(){
- let out=state.opening+`\n\nPaninda today   🦐 🐟 🐠 \n${filDate(state.date)}\nFresh fresh fresh 💦💦💦\n\n`;
- out+=state.fish
-  .map(
-    x=>`${x[0]} ${x[1]} ${x[2]}`
-  )
-  .join("\n");
- out+=`\n\nPLATE, PLATE, PLATE po tayo mga kasuki....\n\n`;
- out+=state.plates
-  .map(
-    x=>`${x[0]} ${x[1]} per plate`
-  )
-  .join("\n");
- out+=`\n\n${state.businessInfo}`;
- return out;
+
+  let out=
+    state.opening+
+    `\n\nPaninda today   🦐 🐟 🐠
+${filDate(state.date)}
+Fresh fresh fresh 💦💦💦\n\n`;
+
+
+  /*
+    NO FILTER HERE.
+
+    Every fish is included.
+  */
+
+  out+=state.fish
+    .map(
+      x=>
+        `${x[0]} ${x[1]} ${x[2]}`
+    )
+    .join("\n");
+
+
+  out+=
+    `\n\nPLATE, PLATE, PLATE po tayo mga kasuki....\n\n`;
+
+
+  /*
+    NO FILTER HERE.
+
+    Every plate is included.
+  */
+
+  out+=state.plates
+    .map(
+      x=>
+        `${x[0]} ${x[1]} per plate`
+    )
+    .join("\n");
+
+
+  out+=
+    `\n\n${state.businessInfo}`;
+
+
+  return out;
+
 }
-function updatePreview(){document.getElementById("preview").textContent=message()}
+
+
+function updatePreview(){
+
+  document.getElementById(
+    "preview"
+  ).textContent=
+    message();
+
+}
+
+
+/* =====================================================
+   PHOTOS
+===================================================== */
+
+
 function renderPhotos(){
- const p=document.getElementById("photos");p.innerHTML="";
- state.photoData.forEach((src,i)=>{const d=document.createElement("div");d.className="photo";d.innerHTML=`<img src="${src}" alt="Selected menu photo"><button type="button" title="Remove photo">×</button>`;d.querySelector("button").onclick=()=>{state.photoData.splice(i,1);renderPhotos();save()};p.appendChild(d)});
+
+  const photos=
+    document.getElementById(
+      "photos"
+    );
+
+
+  photos.innerHTML="";
+
+
+  state.photoData.forEach(
+    (src,i)=>{
+
+      const div=
+        document.createElement(
+          "div"
+        );
+
+
+      div.className="photo";
+
+
+      div.innerHTML=`
+
+        <img
+          src="${src}"
+          alt="Selected menu photo"
+        >
+
+        <button
+          type="button"
+          title="Remove photo"
+        >×</button>
+
+      `;
+
+
+      div
+        .querySelector("button")
+        .onclick=()=>{
+
+          state.photoData.splice(
+            i,
+            1
+          );
+
+          renderPhotos();
+
+          save();
+
+        };
+
+
+      photos.appendChild(
+        div
+      );
+
+    }
+  );
+
 }
-document.getElementById("dateInput").onchange=e=>{state.date=e.target.value;autoSave();render()};
-document.getElementById("opening").oninput=e=>{state.opening=e.target.value;autoSave();updatePreview()};
-document.getElementById("businessInfo").oninput=e=>{state.businessInfo=e.target.value;autoSave();updatePreview()};
-document.getElementById("addFish").onclick=()=>{state.fish.push(["New Fish","0","kilo"]);autoSave();render()};
-document.getElementById("addPlate").onclick=()=>{state.plates.push(["New Plate","0"]);autoSave();render()};
-document.getElementById("save").onclick=save;
-document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText(message());status("Message copied.")}catch(e){status("Copy failed; select the preview text manually.")}};
-document.getElementById("reset").onclick=()=>{if(confirm("Restore original Version 2.1 defaults? This will replace your saved fish, plate items, business text and photos.")){state={fish:clone(DEFAULTS.fish),plates:clone(DEFAULTS.plates),opening:DEFAULTS.opening,businessInfo:DEFAULTS.business,date:new Date().toISOString().slice(0,10),photoData:[]};localStorage.removeItem("fishMenuV21");render();save();}};
-document.getElementById("photoInput").onchange=async e=>{const files=[...e.target.files];for(const file of files){if(!file.type.startsWith("image/"))continue;state.photoData.push(await readFile(file))}e.target.value="";renderPhotos();save();status(`${files.length} photo(s) added.`)};
-function readFile(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})}
-document.getElementById("clearPhotos").onclick=()=>{state.photoData=[];renderPhotos();save()};
-document.getElementById("loadDefaults").onclick=async()=>{const paths=DEFAULTS.photos;let loaded=0;for(const path of paths){try{const r=await fetch(path);const b=await r.blob();state.photoData.push(await readFile(new File([b],path,{type:b.type||"image/jpeg"})));loaded++}catch(e){}}renderPhotos();save();status(loaded?`${loaded} default photo(s) loaded.`:"Default photos not found in this repository.")};
-document.getElementById("share").onclick=async()=>{
- const text=message();
- const files=[];
- for(let i=0;i<state.photoData.length;i++){try{files.push(dataURLtoFile(state.photoData[i],`fish-menu-${i+1}.jpg`))}catch(e){}}
- try{
-   if(navigator.share){
-     if(files.length && navigator.canShare && navigator.canShare({files})) await navigator.share({title:"Today's Fish Menu",text,files});
-     else await navigator.share({title:"Today's Fish Menu",text});
-     status("Share sheet opened.");
-   }else{await navigator.clipboard.writeText(text);status("Sharing is not supported here. Message copied instead.");}
- }catch(e){if(e.name!=="AbortError")status("Share could not be opened on this browser.");}
+
+
+/* =====================================================
+   GENERAL EVENTS
+===================================================== */
+
+
+document.getElementById(
+  "dateInput"
+).onchange=e=>{
+
+  state.date=
+    e.target.value;
+
+  autoSave();
+
+  render();
+
 };
-function dataURLtoFile(data,name){const [head,body]=data.split(",");const mime=(head.match(/:(.*?);/)||[])[1]||"image/jpeg";const bin=atob(body);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new File([arr],name,{type:mime})}
+
+
+document.getElementById(
+  "opening"
+).oninput=e=>{
+
+  state.opening=
+    e.target.value;
+
+  autoSave();
+
+  updatePreview();
+
+};
+
+
+document.getElementById(
+  "businessInfo"
+).oninput=e=>{
+
+  state.businessInfo=
+    e.target.value;
+
+  autoSave();
+
+  updatePreview();
+
+};
+
+
+/* ADD FISH */
+
+document.getElementById(
+  "addFish"
+).onclick=()=>{
+
+  state.fish.push([
+    "New Fish",
+    "0",
+    "kilo"
+  ]);
+
+  autoSave();
+
+  render();
+
+};
+
+
+/* ADD PLATE */
+
+document.getElementById(
+  "addPlate"
+).onclick=()=>{
+
+  state.plates.push([
+    "New Plate",
+    "0"
+  ]);
+
+  autoSave();
+
+  render();
+
+};
+
+
+/* SAVE */
+
+document.getElementById(
+  "save"
+).onclick=save;
+
+
+/* COPY */
+
+document.getElementById(
+  "copy"
+).onclick=async()=>{
+
+  try{
+
+    await navigator
+      .clipboard
+      .writeText(
+        message()
+      );
+
+    status(
+      "Message copied."
+    );
+
+  }catch(e){
+
+    status(
+      "Copy failed; select the preview text manually."
+    );
+
+  }
+
+};
+
+
+/* RESET */
+
+document.getElementById(
+  "reset"
+).onclick=()=>{
+
+  if(
+    confirm(
+      "Restore original Version 2.1 defaults?"
+    )
+  ){
+
+    state={
+
+      fish:
+        clone(
+          DEFAULTS.fish
+        ),
+
+      plates:
+        clone(
+          DEFAULTS.plates
+        ),
+
+      opening:
+        DEFAULTS.opening,
+
+      businessInfo:
+        DEFAULTS.business,
+
+      date:
+        new Date()
+          .toISOString()
+          .slice(0,10),
+
+      photoData:[]
+
+    };
+
+
+    localStorage.removeItem(
+      "fishMenuV21"
+    );
+
+
+    render();
+
+    save();
+
+  }
+
+};
+
+
+/* PHOTO UPLOAD */
+
+document.getElementById(
+  "photoInput"
+).onchange=async e=>{
+
+  const files=[
+    ...e.target.files
+  ];
+
+
+  for(
+    const file of files
+  ){
+
+    if(
+      !file.type.startsWith(
+        "image/"
+      )
+    )
+      continue;
+
+
+    state.photoData.push(
+      await readFile(file)
+    );
+
+  }
+
+
+  e.target.value="";
+
+
+  renderPhotos();
+
+  save();
+
+
+  status(
+    `${files.length} photo(s) added.`
+  );
+
+};
+
+
+function readFile(file){
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      const reader=
+        new FileReader();
+
+
+      reader.onload=()=>{
+        resolve(
+          reader.result
+        );
+      };
+
+
+      reader.onerror=
+        reject;
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+  );
+
+}
+
+
+/* CLEAR PHOTOS */
+
+document.getElementById(
+  "clearPhotos"
+).onclick=()=>{
+
+  state.photoData=[];
+
+  renderPhotos();
+
+  save();
+
+};
+
+
+/* DEFAULT PHOTOS */
+
+document.getElementById(
+  "loadDefaults"
+).onclick=async()=>{
+
+  let loaded=0;
+
+
+  for(
+    const path of DEFAULTS.photos
+  ){
+
+    try{
+
+      const response=
+        await fetch(path);
+
+
+      const blob=
+        await response.blob();
+
+
+      state.photoData.push(
+        await readFile(
+          new File(
+            [blob],
+            path,
+            {
+              type:
+                blob.type ||
+                "image/jpeg"
+            }
+          )
+        )
+      );
+
+
+      loaded++;
+
+    }catch(e){}
+
+  }
+
+
+  renderPhotos();
+
+  save();
+
+
+  status(
+    loaded
+      ? `${loaded} default photo(s) loaded.`
+      : "Default photos not found."
+  );
+
+};
+
+
+/* SHARE */
+
+document.getElementById(
+  "share"
+).onclick=async()=>{
+
+  const text=
+    message();
+
+
+  const files=[];
+
+
+  for(
+    let i=0;
+    i<state.photoData.length;
+    i++
+  ){
+
+    try{
+
+      files.push(
+        dataURLtoFile(
+          state.photoData[i],
+          `fish-menu-${i+1}.jpg`
+        )
+      );
+
+    }catch(e){}
+
+  }
+
+
+  try{
+
+    if(
+      navigator.share
+    ){
+
+      if(
+        files.length &&
+        navigator.canShare &&
+        navigator.canShare({
+          files
+        })
+      ){
+
+        await navigator.share({
+
+          title:
+            "Today's Fish Menu",
+
+          text,
+
+          files
+
+        });
+
+      }else{
+
+        await navigator.share({
+
+          title:
+            "Today's Fish Menu",
+
+          text
+
+        });
+
+      }
+
+
+      status(
+        "Share sheet opened."
+      );
+
+    }else{
+
+      await navigator
+        .clipboard
+        .writeText(text);
+
+
+      status(
+        "Sharing is not supported here. Message copied instead."
+      );
+
+    }
+
+  }catch(e){
+
+    if(
+      e.name!=="AbortError"
+    ){
+
+      status(
+        "Share could not be opened on this browser."
+      );
+
+    }
+
+  }
+
+};
+
+
+function dataURLtoFile(
+  data,
+  filename
+){
+
+  const parts=
+    data.split(",");
+
+
+  const mime=
+    (
+      parts[0].match(
+        /:(.*?);/
+      )||[]
+    )[1] ||
+    "image/jpeg";
+
+
+  const binary=
+    atob(parts[1]);
+
+
+  const bytes=
+    new Uint8Array(
+      binary.length
+    );
+
+
+  for(
+    let i=0;
+    i<binary.length;
+    i++
+  ){
+
+    bytes[i]=
+      binary.charCodeAt(i);
+
+  }
+
+
+  return new File(
+    [bytes],
+    filename,
+    {
+      type:mime
+    }
+  );
+
+}
+
+
+/* START */
+
 render();
+
 </script>
+
 </body>
 </html>
