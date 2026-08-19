@@ -87,11 +87,11 @@ footer{max-width:760px;margin:auto;padding:0 12px;color:var(--muted);font-size:1
 <script>
 const DEFAULTS={
 fish:[
-["Tahong","110","kilo",true],["Hipon","520","kilo",true],["Dalagang Bukid","290","kilo",true],
-["Alumahan","290","kilo",true],["Bangus","280","kilo",true],["Tilapya","180","kilo",true]
+["Tahong","110","kilo"],["Hipon","520","kilo"],["Dalagang Bukid","290","kilo"],
+["Alumahan","290","kilo"],["Bangus","280","kilo"],["Tilapya","180","kilo"]
 ],
 plates:[
-["Hipon","120",true],["Dalagang Bukid","100"],["Alumahan","100"],["Bangus 1pc.","180"],
+["Hipon","120"],["Dalagang Bukid","100"],["Alumahan","100"],["Bangus 1pc.","180"],
 ["Bangus 2pc.","340"],["Boneless 1pc.","190"],["Tilapya 2's","100"],["Tilapya 3's","140"]
 ],
 opening:`Magandang araw mga Kasuki
@@ -329,9 +329,17 @@ function setupReorder(containerId,list){
 
 function message(){
  let out=state.opening+`\n\nPaninda today   🦐 🐟 🐠 \n${filDate(state.date)}\nFresh fresh fresh 💦💦💦\n\n`;
- out+=state.fish.filter(x=>x[3]).map(x=>`${x[0]} ${x[1]} ${x[2]}`).join("\n");
+ out+=state.fish
+  .map(
+    x=>`${x[0]} ${x[1]} ${x[2]}`
+  )
+  .join("\n");
  out+=`\n\nPLATE, PLATE, PLATE po tayo mga kasuki....\n\n`;
- out+=state.plates.filter(x=>x[2]!==false).map(x=>`${x[0]} ${x[1]} per plate`).join("\n");
+ out+=state.plates
+  .map(
+    x=>`${x[0]} ${x[1]} per plate`
+  )
+  .join("\n");
  out+=`\n\n${state.businessInfo}`;
  return out;
 }
