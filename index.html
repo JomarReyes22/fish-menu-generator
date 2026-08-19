@@ -132,7 +132,7 @@ function render(){
     const r=document.createElement("div");
     r.className="row reorder-row";
     r.dataset.index=i;
-    r.innerHTML=`<button type="button" class="drag-handle" aria-label="Reorder fish" title="Press and hold to reorder">☰</button><input class="input" value="${esc(x[0])}" aria-label="Fish name"><input class="input" type="number" min="0" step="1" value="${esc(x[1])}" aria-label="Price"><input class="input" value="${esc(x[2])}" aria-label="Unit"><label class="available"><input type="checkbox" ${x[3]?"checked":""}> On</label>`;
+    r.innerHTML=`<button type="button" class="drag-handle" aria-label="Reorder fish" title="Press and hold to reorder">☰</button><input class="input" value="${esc(x[0])}" aria-label="Fish name"><input class="input" type="number" min="0" step="1" value="${esc(x[1])}" aria-label="Price"><input class="input" value="${esc(x[2])}" aria-label="Unit">`;
     const del=document.createElement("button");del.className="danger";del.textContent="×";del.title="Remove fish";r.appendChild(del);
     r.children[1].oninput=e=>{x[0]=e.target.value;autoSave();updatePreview()};
     r.children[2].oninput=e=>{x[1]=e.target.value;autoSave();updatePreview()};
