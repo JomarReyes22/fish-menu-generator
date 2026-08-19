@@ -351,8 +351,8 @@ function renderPhotos(){
 document.getElementById("dateInput").onchange=e=>{state.date=e.target.value;autoSave();render()};
 document.getElementById("opening").oninput=e=>{state.opening=e.target.value;autoSave();updatePreview()};
 document.getElementById("businessInfo").oninput=e=>{state.businessInfo=e.target.value;autoSave();updatePreview()};
-document.getElementById("addFish").onclick=()=>{state.fish.push(["New Fish","0","kilo",true]);autoSave();render()};
-document.getElementById("addPlate").onclick=()=>{state.plates.push(["New Plate","0",true]);autoSave();render()};
+document.getElementById("addFish").onclick=()=>{state.fish.push(["New Fish","0","kilo"]);autoSave();render()};
+document.getElementById("addPlate").onclick=()=>{state.plates.push(["New Plate","0"]);autoSave();render()};
 document.getElementById("save").onclick=save;
 document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText(message());status("Message copied.")}catch(e){status("Copy failed; select the preview text manually.")}};
 document.getElementById("reset").onclick=()=>{if(confirm("Restore original Version 2.1 defaults? This will replace your saved fish, plate items, business text and photos.")){state={fish:clone(DEFAULTS.fish),plates:clone(DEFAULTS.plates),opening:DEFAULTS.opening,businessInfo:DEFAULTS.business,date:new Date().toISOString().slice(0,10),photoData:[]};localStorage.removeItem("fishMenuV21");render();save();}};
